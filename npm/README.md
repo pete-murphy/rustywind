@@ -108,9 +108,9 @@ Options:
 
       --vite-css <VITE_CSS>
           When set RustyWind will determine the sort order by the order the class appear in the CSS file that vite generates.
-          
+
           Please provide the full URL to the CSS file ex: `rustywind --vite-css "http://127.0.0.1:5173/src/assets/main.css" . --dry-run`
-          
+
           Note: This option is experimental and may be removed in the future.
 
       --skip-ssl-verification
@@ -119,8 +119,8 @@ Options:
       --ignored-files <IGNORED_FILES>
           When set, RustyWind will ignore this list of files
 
-      --custom-regex <CUSTOM_REGEX>
-          Uses a custom regex instead of default one
+      --custom-regexes <CUSTOM_REGEXES>
+          Uses custom regexes instead of default ones. Should have a single capture group that includes only the classes. This argument can be used multiple times
 
   -h, --help
           Print help (see a summary with '-h')

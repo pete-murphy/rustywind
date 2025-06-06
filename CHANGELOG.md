@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### Added
+
+- `--custom-regexes` option now supports multiple regexes. The `--custom-regexes` flag can be used multiple times to specify different regex patterns for sorting classes in various attributes (e.g., `class`, `customClasses`, `data-classes`, etc.)
+
+### Changed
+
+- Renamed `--custom-regex` to `--custom-regexes` to better reflect the new multiple regex capability
+- Maintained backward compatibility: providing a single regex still works as before
+
 ## [0.24.0] - 2025-02-27
 
 - In MacOS limit number of threads to 4 for up to a 400% performance boost
