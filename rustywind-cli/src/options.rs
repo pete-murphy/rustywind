@@ -130,15 +130,32 @@ fn get_sorter_from_cli(cli: &Cli) -> Result<Sorter> {
 }
 
 fn get_custom_regex_from_cli(cli: &Cli) -> Result<FinderRegex> {
-    match &cli.custom_regex {
-        Some(regex_string) => {
-            let regex = Regex::new(regex_string).wrap_err("Unable to parse custom regex")?;
-
-            if regex.captures_len() < 2 {
-                eyre::bail!("custom regex error, requires at-least 2 capture groups");
+    match &cli.custom_regexes {
+        Some(regex_strings) => {
+            if regex_strings.len() == 1 {
+                // Single regex case - maintain backward compatibility
+                let regex = Regex::new(&regex_strings[0]).wrap_err("Unable to parse custom regex")?;
+                
+                if regex.captures_len() < 2 {
+                    eyre::bail!("custom regex error, requires at-least 2 capture groups");
+                }
+                
+                Ok(FinderRegex::CustomRegex(regex))
+            } else {
+                // Multiple regexes case
+                let mut regexes = Vec::new();
+                for (i, regex_string) in regex_strings.iter().enumerate() {
+                    let regex = Regex::new(regex_string)
+                        .wrap_err(format!("Unable to parse custom regex #{}", i + 1))?;
+                    
+                    if regex.captures_len() < 2 {
+                        eyre::bail!("custom regex #{} error, requires at-least 2 capture groups", i + 1);
+                    }
+                    
+                    regexes.push(regex);
+                }
+                Ok(FinderRegex::CustomRegexes(regexes))
             }
-
-            Ok(FinderRegex::CustomRegex(regex))
         }
         None => Ok(FinderRegex::DefaultRegex),
     }

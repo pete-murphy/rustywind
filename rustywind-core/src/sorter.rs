@@ -15,20 +15,21 @@ use eyre::Result;
 pub(crate) static SORTER_EXTRACTOR_RE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^(\.[^\s]+)[ ]").unwrap());
 
-/// Use either our default regex in [crate::defaults::RE] or a custom regex.
+/// Use either our default regex in [crate::defaults::RE] or custom regexes.
 #[derive(Debug, Clone)]
 pub enum FinderRegex {
     DefaultRegex,
     CustomRegex(Regex),
+    CustomRegexes(Vec<Regex>),
 }
 
-impl Deref for FinderRegex {
-    type Target = Regex;
-
-    fn deref(&self) -> &Self::Target {
-        match &self {
-            Self::DefaultRegex => &RE,
-            Self::CustomRegex(re) => re,
+impl FinderRegex {
+    /// Get all regexes as a Vec, handling both single and multiple regex cases
+    pub fn get_regexes(&self) -> Vec<&Regex> {
+        match self {
+            Self::DefaultRegex => vec![&RE],
+            Self::CustomRegex(regex) => vec![regex],
+            Self::CustomRegexes(regexes) => regexes.iter().collect(),
         }
     }
 }

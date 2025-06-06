@@ -46,16 +46,25 @@ impl RustyWind {
 
     /// Checks if the file contents have any classes.
     pub fn has_classes(&self, file_contents: &str) -> bool {
-        self.regex.is_match(file_contents)
+        self.regex.get_regexes()
+            .iter()
+            .any(|regex| regex.is_match(file_contents))
     }
 
     /// Sorts the classes in the file contents.
     pub fn sort_file_contents<'a>(&self, file_contents: &'a str) -> Cow<'a, str> {
-        self.regex.replace_all(file_contents, |caps: &Captures| {
-            let classes = &caps[1];
-            let sorted_classes = self.sort_classes(classes);
-            caps[0].replace(classes, &sorted_classes)
-        })
+        let regexes = self.regex.get_regexes();
+        let mut result = Cow::Borrowed(file_contents);
+        
+        for regex in regexes {
+            result = regex.replace_all(&result, |caps: &Captures| {
+                let classes = &caps[1];
+                let sorted_classes = self.sort_classes(classes);
+                caps[0].replace(classes, &sorted_classes)
+            });
+        }
+        
+        result
     }
 
     /// Given a [&str] of whitespace-separated classes, returns a [String] of sorted classes.
