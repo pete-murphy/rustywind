@@ -86,10 +86,10 @@ pub struct Cli {
     /// When set, RustyWind will ignore this list of files
     #[arg(long)]
     ignored_files: Option<Vec<String>>,
-    /// Uses a custom regex instead of default one. Should have a single capture group that
-    /// includes only the classes.
+    /// Uses custom regexes instead of default ones. Should have a single capture group that
+    /// includes only the classes. This argument can be used multiple times.
     #[arg(long)]
-    custom_regex: Option<String>,
+    custom_regexes: Option<Vec<String>>,
     /// Specify how individual classes are wrapped.
     #[arg(long)]
     class_wrapping: Option<options::CliClassWrapping>,
